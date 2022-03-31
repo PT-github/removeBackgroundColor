@@ -1,0 +1,57 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <style type="text/css">
+    canvas {
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <!-- <img src="7.png" class="pic" /> -->
+  </div>
+  <canvas width="354" height="264"></canvas>
+  <canvas width="354" height="264"></canvas>
+  <script>
+    var canvas = document.querySelectorAll('canvas')[0];
+    var context = canvas.getContext('2d')
+    var canvasResult = document.querySelectorAll('canvas')[1];
+    var contextResult = canvasResult.getContext('2d');
+    // 图片数据
+    var imgData = null, imgDataResult = null;
+    // 尺寸数据
+    var w = 354, h = 264;
+    var img = new Image();
+
+    img.onload = function () {
+      context.drawImage(this, 0, 0);
+      // 获取像素信息数据
+      imgData = context.getImageData(0, 0, w, h);
+      imgDataResult = removeBlackBackgroundFunc(imgData)
+      console.log(imgDataResult)
+      contextResult.putImageData(imgDataResult, 0, 0);
+    };
+
+    img.src = './7.png'
+    function removeBlackBackgroundFunc(frameImageData) {
+      let data = frameImageData.data;
+      for(var i = 0;i < data.length / 4; i ++){
+          var index = i * 4;
+          var r = data[index],g = data[index + 1],b = data[index + 2],a = data[index + 3];
+          var max = Math.max(r,g,b);
+          data[index + 3] = max;
+          if(r == 0 && g == 0 && b == 0){
+            data[index + 3] = 0;
+          }
+      }
+      return frameImageData;
+    }
+  </script>
+</body>
+
+</html>
